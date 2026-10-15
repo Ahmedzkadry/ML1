@@ -1,7 +1,9 @@
 import os
 from typing import Any
+
 import joblib
 import pandas as pd
+
 from production_app.config import settings
 from production_app.logging_config import logger
 

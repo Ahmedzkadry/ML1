@@ -1,16 +1,15 @@
 import pandas as pd
-from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
-from production_app.preprocessing import create_preprocessor
+from sklearn.pipeline import Pipeline
+
 from production_app.config import settings
 from production_app.logging_config import logger
+from production_app.preprocessing import create_preprocessor
 
 
 def build_pipeline() -> Pipeline:
     preprocessor = create_preprocessor()
-    classifier = LogisticRegression(
-        random_state=settings.random_state, max_iter=1000
-    )
+    classifier = LogisticRegression(random_state=settings.random_state, max_iter=1000)
     return Pipeline(
         steps=[
             ("preprocessor", preprocessor),

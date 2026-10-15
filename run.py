@@ -1,6 +1,7 @@
 import sys
-from production_app.main import run_training_pipeline, run_prediction_pipeline
+
 from production_app.data import load_raw_data
+from production_app.main import run_prediction_pipeline, run_training_pipeline
 
 mode = sys.argv[1] if len(sys.argv) > 1 else "train"
 

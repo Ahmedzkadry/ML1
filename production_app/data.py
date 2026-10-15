@@ -1,18 +1,14 @@
-from typing import Tuple
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
+
 from production_app.config import settings
 from production_app.logging_config import logger
 
 
 def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
-    df.columns = (
-        df.columns.str.strip()
-        .str.lower()
-        .str.replace(" ", "_", regex=False)
-    )
+    df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_", regex=False)
     return df
 
 
@@ -23,7 +19,7 @@ def load_raw_data() -> pd.DataFrame:
     return normalize_column_names(df)
 
 
-def get_train_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+def get_train_test_data() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     df = load_raw_data()
     X = df.drop(columns=["target"])
     y = df["target"]
@@ -40,4 +36,3 @@ def get_train_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Ser
         random_state=settings.random_state,
         stratify=y,
     )
-    

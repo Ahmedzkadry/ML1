@@ -1,9 +1,14 @@
- \\...مش عارف اكتب ايه بصراحه...
-\\بس انا بدات و عملت النوت بوك  و بدات اعمل الملفات  وافسمها و استخدمت جيميناي  
-\\و بالذات في حتت ال  logging 
-\\ و واحده واحده البروجكت اتعمل
 
+=======
+## 🚀 Getting Started
 
+### Prerequisites
+Make sure you have [uv](https://docs.astral.sh/uv/) installed on your machine.
 
-ال env.  ..
-اترفع مع الملفات 
+### 1. Installation
+Clone the repository and install dependencies:
+```bash
+git 
+cd 
+uv sync
+
