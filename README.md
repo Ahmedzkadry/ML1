@@ -12,3 +12,5 @@ git
 cd 
 uv sync
 
+hint if u open docker click http://localhost:8000/docs
+
