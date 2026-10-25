@@ -1,51 +1,55 @@
-from pydantic import BaseModel, Field
+import json
+from pathlib import Path
+
+from pydantic import BaseModel, ConfigDict, Field, create_model
+
+from production_app.config import settings
+
+DEFAULT_SELECTED_FEATURES: list[str] = [
+    "mean_radius",
+    "mean_texture",
+    "mean_perimeter",
+    "mean_area",
+    "mean_concavity",
+    "mean_concave_points",
+    "worst_radius",
+    "worst_texture",
+    "worst_perimeter",
+    "worst_concave_points",
+]
 
 
-class PredictionRequest(BaseModel):
-    mean_radius: float = Field(..., description="Mean radius", ge=0.0)
-    mean_texture: float = Field(..., description="Mean texture", ge=0.0)
-    mean_perimeter: float = Field(..., description="Mean perimeter", ge=0.0)
-    mean_area: float = Field(..., description="Mean area", ge=0.0)
-    mean_smoothness: float = Field(..., description="Mean smoothness", ge=0.0)
-    mean_compactness: float = Field(..., description="Mean compactness", ge=0.0)
-    mean_concavity: float = Field(..., description="Mean concavity", ge=0.0)
-    mean_concave_points: float = Field(..., description="Mean concave points", ge=0.0)
-    mean_symmetry: float = Field(..., description="Mean symmetry", ge=0.0)
-    mean_fractal_dimension: float = Field(
-        ..., description="Mean fractal dimension", ge=0.0
-    )
+def load_selected_feature_names() -> list[str]:
+    path = Path(settings.selected_features_path)
+    if path.exists():
+        try:
+            features = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(features, list) and features:
+                return [str(f) for f in features]
+        except Exception:
+            pass
+    return DEFAULT_SELECTED_FEATURES
 
-    radius_error: float = Field(..., description="Radius standard error", ge=0.0)
-    texture_error: float = Field(..., description="Texture standard error", ge=0.0)
-    perimeter_error: float = Field(..., description="Perimeter standard error", ge=0.0)
-    area_error: float = Field(..., description="Area standard error", ge=0.0)
-    smoothness_error: float = Field(
-        ..., description="Smoothness standard error", ge=0.0
-    )
-    compactness_error: float = Field(
-        ..., description="Compactness standard error", ge=0.0
-    )
-    concavity_error: float = Field(..., description="Concavity standard error", ge=0.0)
-    concave_points_error: float = Field(
-        ..., description="Concave points standard error", ge=0.0
-    )
-    symmetry_error: float = Field(..., description="Symmetry standard error", ge=0.0)
-    fractal_dimension_error: float = Field(
-        ..., description="Fractal dimension standard error", ge=0.0
-    )
 
-    worst_radius: float = Field(..., description="Worst radius", ge=0.0)
-    worst_texture: float = Field(..., description="Worst texture", ge=0.0)
-    worst_perimeter: float = Field(..., description="Worst perimeter", ge=0.0)
-    worst_area: float = Field(..., description="Worst area", ge=0.0)
-    worst_smoothness: float = Field(..., description="Worst smoothness", ge=0.0)
-    worst_compactness: float = Field(..., description="Worst compactness", ge=0.0)
-    worst_concavity: float = Field(..., description="Worst concavity", ge=0.0)
-    worst_concave_points: float = Field(..., description="Worst concave points", ge=0.0)
-    worst_symmetry: float = Field(..., description="Worst symmetry", ge=0.0)
-    worst_fractal_dimension: float = Field(
-        ..., description="Worst fractal dimension", ge=0.0
+SELECTED_FEATURES: list[str] = load_selected_feature_names()
+
+_field_definitions = {
+    feature_name: (
+        float,
+        Field(
+            ...,
+            description=feature_name.replace("_", " ").capitalize(),
+            ge=0.0,
+        ),
     )
+    for feature_name in SELECTED_FEATURES
+}
+
+PredictionRequest = create_model(
+    "PredictionRequest",
+    __config__=ConfigDict(extra="forbid"),
+    **_field_definitions,
+)
 
 
 class PredictionResponse(BaseModel):

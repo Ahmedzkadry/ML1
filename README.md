@@ -205,3 +205,6 @@ docker build -t ml1-api .
 ```bash
 docker run -d -p 8000:8000 --name ml_service ml1-api
 ```
+
+
+Remember: This is an educational ML project; do not present predictions as clinically validated medical advice
